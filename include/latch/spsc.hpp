@@ -5,8 +5,7 @@
 /**
  * Purpose: Pass objects between threads (SPSC / MPSC)
  * Ownership: Usually the consumer owns the object after popping
- * Hot-Path Optim: Lock-free, cache-friendly queue
- * Use-case: MarketData → Strategy delivery
+ * Optimized: Lock-free, cache-friendly queue
  */
 
 #include <assert.h>
@@ -20,8 +19,7 @@ template <typename T> class SPSC {
 public:
   explicit SPSC(std::size_t capacity)
       : capacity_(capacity), mask_(capacity - 1), buffer_(capacity) {
-    // enforce power-of-two
-    assert((capacity & mask_) == 0);
+    assert((capacity & mask_) == 0); // enforce power-of-two
   }
 
   bool try_push(const T &item) {
