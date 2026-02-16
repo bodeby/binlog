@@ -1,103 +1,71 @@
 # Latch
 
-Latch is a zero-allocation, lock-free binary event recorder designed for ultra–low-latency trading systems. It is not a traditional logging library. It is a deterministic flight recorder for hot-path code.
+Latch is a deterministic flight recorder for ultra–low-latency C++ systems. It captures structured binary events from hot-path code with constant-time cost and zero dynamic allocation.
 
-The library is built for environments where latency, predictability, and bounded memory behavior are mandatory. It avoids dynamic allocation, string formatting, locks, and syscalls in the producer path. Events are written as fixed-size binary records and decoded offline.
+Latch is designed for environments such as high-frequency trading engines where logging must never introduce jitter, blocking, or hidden memory overhead. It is not a text logger and does not perform formatting in the hot path.
 
-## Purpose
+## Concept
 
-Latch exists to record critical runtime events in high-frequency trading systems without disturbing the execution characteristics of the hot path.
+Latch follows a flight-recorder model:
 
-It is suitable for:
+* The hot path records fixed-size binary events.
+* Events are written into a bounded single-producer/single-consumer ring buffer.
+* A dedicated writer thread drains the buffer and persists records to disk.
+* Formatting and human-readable interpretation happen offline.
 
-* Strategy kernels pinned to dedicated cores
-* Market data handlers
-* Order routing engines
-* Risk modules requiring deterministic instrumentation
-* Any system where logging must never block
+This separation keeps capture deterministic and predictable.
 
-It is not intended for general application logging.
+## Design Goals
 
-Design Principles
-
-Hot path must be deterministic:
-
-* No heap allocations
-* No locks
-* No syscalls
-* No formatting
+* No heap allocation in the producer path
+* No locks in the producer path
+* No syscalls in the producer path
 * Constant-time event emission
-
-Events are:
-
-* Fixed-size
-* Plain-old-data
-* Cache-line aligned
-* Written to a bounded SPSC ring buffer
-
-A dedicated cold thread consumes events and persists them to disk. Formatting and human-readable decoding are performed offline using a separate tool.
-
-Architecture
-
-Producer (hot path):
-
-* Emits a fixed-size LogEvent
-* Pushes to a lock-free SPSC ring
-* Never blocks
-* Drops on overflow (configurable)
-
-Consumer (cold path):
-
-* Drains ring
-* Writes batched binary records to file
-* Optional mmap-backed writer
-
-Decoder tool:
-
-* Reads raw binary log
-* Maps EventId to readable output
-* Converts TSC to wall-clock time (optional)
-
-Why Not Use a Traditional Logger?
-
-String formatting, heap allocation, and IO calls introduce jitter and non-deterministic latency. Even “fast” logging libraries are not designed for the strict constraints of ultra-HFT hot paths.
-
-Latch separates event capture from presentation. The hot path records structured data only. Interpretation happens later.
-
-Feature Overview
-
+* Bounded memory usage
+* Cache-line aligned record layout
 * C++20
-* Header-first hot path API
-* Lock-free SPSC ring buffer
-* Compile-time event identifiers
-* Fixed-size binary event layout
-* Zero dynamic allocation in producer
-* Drop-on-overflow policy
-* Offline decoding tool
-* Optional TSC-based timestamping
 
-Non-Goals
+## rchitecture
 
-* Text logging in the hot path
+Latch runs as an embedded library inside the trading process.
+
+### Producer (hot path):
+
+* Emits fixed-size `Record` objects.
+* Pushes them into a lock-free SPSC ring.
+* Never blocks.
+* Drops on overflow (configurable).
+
+### Writer (cold path):
+
+* Dedicated thread.
+* Batches and writes raw binary records to file.
+* May be pinned to a non-critical core.
+
+There is no IPC and no side-car process in the default model.
+
+## Example
+
+Recording an event from hot-path code:
+
+```cpp
+recorder.record<EventId::OrderSent>(order_id, price, quantity);
+```
+
+This emits a structured binary record. No strings are formatted. No memory is allocated.
+
+Records are decoded later using a separate tool.
+
+## Non-Goals
+
+* Text-based logging
 * printf-style APIs
 * Dynamic field formatting
-* Unbounded queues
 * Multi-producer ring buffers
+* Unbounded queues
 * Runtime schema registration
 
-Example
-
-Hot path usage:
-
-```
-log<EventId::OrderSent>(order_id, price, quantity);
-```
-
-This records a structured binary event with constant-time cost. No strings are formatted. No memory is allocated.
-
-A separate decoding tool converts the binary log into human-readable output.
-
-Build
+## Build
 
 Latch requires a C++20-compatible compiler.
 
@@ -110,25 +78,19 @@ cmake ..
 cmake --build .
 ```
 
-Integration
+The capture layer is header-first and can be embedded directly into latency-sensitive components. The writer and decoder are separate targets.
 
-The hot path component can be included header-only. The runtime writer and decoder are separate targets.
+## License
 
-Only the core headers are required for producer-side integration.
+MIT License.
 
-License
+## Audience
 
-Latch is released under the MIT License.
-
-Intended Audience
-
-This library targets engineers building latency-sensitive systems such as:
+Latch is intended for engineers building performance-critical systems such as:
 
 * High-frequency trading engines
-* Market making infrastructure
-* Exchange gateways
-* Real-time financial data systems
+* Market data handlers
+* Order gateways
+* Real-time risk systems
 
-If your primary concern is application-level logging, consider using a general-purpose logging library instead.
-
-Latch is built for determinism first.
+If you need application-level logging, use a general-purpose logging library instead. Latch is built for determinism and minimal interference with hot-path execution.
