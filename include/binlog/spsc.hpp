@@ -1,4 +1,4 @@
-// include/latch/spsc.hpp
+// include/binlog/spsc.hpp
 
 #pragma once
 
@@ -13,7 +13,7 @@
 #include <cstddef> // for std::size_t (portable size type)
 #include <vector>  // buffer for batch processing
 
-namespace latch {
+namespace binlog {
 
 template <typename T> class SPSC {
 public:
@@ -56,4 +56,4 @@ private:
   alignas(64) std::atomic<std::size_t> tail_{0}; // producer-owned
 };
 
-} // namespace latch
+} // namespace binlog

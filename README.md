@@ -1,12 +1,12 @@
-# Latch
+# Binlog
 
-Latch is a deterministic flight recorder for ultra–low-latency C++ systems. It captures structured binary events from hot-path code with constant-time cost and zero dynamic allocation.
+Binlog is a deterministic flight recorder for ultra–low-latency C++ systems. It captures structured binary events from hot-path code with constant-time cost and zero dynamic allocation.
 
-Latch is designed for environments such as high-frequency trading engines where logging must never introduce jitter, blocking, or hidden memory overhead. It is not a text logger and does not perform formatting in the hot path.
+Binlog is designed for environments such as high-frequency trading engines where logging must never introduce jitter, blocking, or hidden memory overhead. It is not a text logger and does not perform formatting in the hot path.
 
 ## Concept
 
-Latch follows a flight-recorder model:
+Binlog follows a flight-recorder model:
 
 * The hot path records fixed-size binary events.
 * Events are written into a bounded single-producer/single-consumer ring buffer.
@@ -27,7 +27,7 @@ This separation keeps capture deterministic and predictable.
 
 ## rchitecture
 
-Latch runs as an embedded library inside the trading process.
+Binlog runs as an embedded library inside the trading process.
 
 ### Producer (hot path):
 
@@ -67,7 +67,7 @@ Records are decoded later using a separate tool.
 
 ## Build
 
-Latch requires a C++20-compatible compiler.
+Binlog requires a C++20-compatible compiler.
 
 Typical build:
 
@@ -86,11 +86,11 @@ MIT License.
 
 ## Audience
 
-Latch is intended for engineers building performance-critical systems such as:
+Binlog is intended for engineers building performance-critical systems such as:
 
 * High-frequency trading engines
 * Market data handlers
 * Order gateways
 * Real-time risk systems
 
-If you need application-level logging, use a general-purpose logging library instead. Latch is built for determinism and minimal interference with hot-path execution.
+If you need application-level logging, use a general-purpose logging library instead. Binlog is built for determinism and minimal interference with hot-path execution.

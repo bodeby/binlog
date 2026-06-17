@@ -1,8 +1,8 @@
-// include/latch/recorder.hpp
+// include/binlog/recorder.hpp
 
 #pragma once
 
-namespace latch {
+namespace binlog {
 
 class Recorder {
 public:
@@ -13,4 +13,4 @@ public:
 private:
 };
 
-} // namespace latch
+} // namespace binlog

@@ -1,9 +1,9 @@
 // src/recorder.cpp
 
-#include "latch/recorder.cpp";
+#include <binlog/recorder.hpp>
 
-namespace latch {
+namespace binlog {
 
 Recorder::Recorder();
 
-} // namespace latch
+} // namespace binlog
