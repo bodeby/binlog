@@ -7,7 +7,6 @@ namespace binlog {
 class Recorder {
 public:
   explicit Recorder();
-
   void record();
 
 private:

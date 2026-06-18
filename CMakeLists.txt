@@ -10,9 +10,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(BINLOG_BUILD_TESTS ON)
-option(BINLOG_BUILD_TOOLS ON)
-option(BINLOG_BUILD_BENCHMARKS OFF)
+option(BINLOG_BUILD_TOOLS "Build tools" ON)
+option(BINLOG_BUILD_TESTS "Build tests" OFF)
+option(BINLOG_BUILD_BENCH "Build bench" OFF)
 
 add_subdirectory(src)
 
@@ -25,6 +25,6 @@ if(BINLOG_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
 
-if(BINLOG_BUILD_BENCHMARKS)
+if(BINLOG_BUILD_BENCH)
   add_subdirectory(bench)
 endif()

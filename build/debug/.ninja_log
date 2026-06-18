@@ -1,0 +1,13 @@
+# ninja log v5
+97	192	1781802141533581627	tools/inspect/binlog-inspect	4e68e38f419434fb
+2	133	1781802031090056221	src/CMakeFiles/binlog.dir/logger.cpp.o	21ca26abbb54348f
+2	97	1781802141433193866	tools/inspect/CMakeFiles/binlog-inspect.dir/main.cpp.o	f890c3f7cece47cf
+5	157	1781802031123056561	tools/decode/CMakeFiles/binlog-decode.dir/main.cpp.o	42607ae584dce668
+5	196	1781802031123056561	src/CMakeFiles/binlog.dir/writer.cpp.o	b9d744613a59a652
+6	158	1781802031090056221	tools/decode/CMakeFiles/binlog-decode.dir/decoder.cpp.o	a43017625e6ac8b8
+3	161	1781802031090056221	src/CMakeFiles/binlog.dir/mmap_writer.cpp.o	efd896f240b752ed
+4	177	1781802031090056221	src/CMakeFiles/binlog.dir/tsc_calibrator.cpp.o	e697d9f744385cbc
+1	93	1781802116996941935	src/CMakeFiles/binlog.dir/recorder.cpp.o	420b3db673f3fe33
+93	174	1781802117082942822	src/libbinlog.a	bc9a4976a9fe71e0
+2	96	1781802160539390839	tools/decode/CMakeFiles/binlog-decode.dir/main.cpp.o	42607ae584dce668
+96	199	1781802160645708866	tools/decode/binlog-decode	b2dec93259118bba
