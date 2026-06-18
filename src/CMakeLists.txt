@@ -3,10 +3,6 @@ add_library(binlog)
 target_sources(binlog
     PRIVATE
         logger.cpp
-        mmap_writer.cpp
-        recorder.cpp
-        tsc_calibrator.cpp
-        writer.cpp
 )
 
 target_include_directories(binlog

@@ -85,38 +85,6 @@ build src/CMakeFiles/binlog.dir/logger.cpp.o: CXX_COMPILER__binlog_unscanned_Deb
   OBJECT_DIR = src/CMakeFiles/binlog.dir
   OBJECT_FILE_DIR = src/CMakeFiles/binlog.dir
 
-build src/CMakeFiles/binlog.dir/mmap_writer.cpp.o: CXX_COMPILER__binlog_unscanned_Debug /home/bode/github/personal/binlog/src/mmap_writer.cpp || cmake_object_order_depends_target_binlog
-  DEP_FILE = src/CMakeFiles/binlog.dir/mmap_writer.cpp.o.d
-  FLAGS = -g -std=c++20
-  INCLUDES = -I/home/bode/github/personal/binlog/include
-  LAUNCHER = ccache 
-  OBJECT_DIR = src/CMakeFiles/binlog.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/binlog.dir
-
-build src/CMakeFiles/binlog.dir/recorder.cpp.o: CXX_COMPILER__binlog_unscanned_Debug /home/bode/github/personal/binlog/src/recorder.cpp || cmake_object_order_depends_target_binlog
-  DEP_FILE = src/CMakeFiles/binlog.dir/recorder.cpp.o.d
-  FLAGS = -g -std=c++20
-  INCLUDES = -I/home/bode/github/personal/binlog/include
-  LAUNCHER = ccache 
-  OBJECT_DIR = src/CMakeFiles/binlog.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/binlog.dir
-
-build src/CMakeFiles/binlog.dir/tsc_calibrator.cpp.o: CXX_COMPILER__binlog_unscanned_Debug /home/bode/github/personal/binlog/src/tsc_calibrator.cpp || cmake_object_order_depends_target_binlog
-  DEP_FILE = src/CMakeFiles/binlog.dir/tsc_calibrator.cpp.o.d
-  FLAGS = -g -std=c++20
-  INCLUDES = -I/home/bode/github/personal/binlog/include
-  LAUNCHER = ccache 
-  OBJECT_DIR = src/CMakeFiles/binlog.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/binlog.dir
-
-build src/CMakeFiles/binlog.dir/writer.cpp.o: CXX_COMPILER__binlog_unscanned_Debug /home/bode/github/personal/binlog/src/writer.cpp || cmake_object_order_depends_target_binlog
-  DEP_FILE = src/CMakeFiles/binlog.dir/writer.cpp.o.d
-  FLAGS = -g -std=c++20
-  INCLUDES = -I/home/bode/github/personal/binlog/include
-  LAUNCHER = ccache 
-  OBJECT_DIR = src/CMakeFiles/binlog.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/binlog.dir
-
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target binlog
@@ -125,7 +93,7 @@ build src/CMakeFiles/binlog.dir/writer.cpp.o: CXX_COMPILER__binlog_unscanned_Deb
 #############################################
 # Link the static library src/libbinlog.a
 
-build src/libbinlog.a: CXX_STATIC_LIBRARY_LINKER__binlog_Debug src/CMakeFiles/binlog.dir/logger.cpp.o src/CMakeFiles/binlog.dir/mmap_writer.cpp.o src/CMakeFiles/binlog.dir/recorder.cpp.o src/CMakeFiles/binlog.dir/tsc_calibrator.cpp.o src/CMakeFiles/binlog.dir/writer.cpp.o
+build src/libbinlog.a: CXX_STATIC_LIBRARY_LINKER__binlog_Debug src/CMakeFiles/binlog.dir/logger.cpp.o
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = src/CMakeFiles/binlog.dir
   POST_BUILD = :
