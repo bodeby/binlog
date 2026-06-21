@@ -2,7 +2,7 @@ add_library(binlog)
 
 target_sources(binlog
     PRIVATE
-        logger.cpp
+        # logger.cpp
 )
 
 target_include_directories(binlog

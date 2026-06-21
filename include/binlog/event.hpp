@@ -6,10 +6,10 @@
 
 namespace binlog {
 
-struct OrderAdded {
-  std::uint64_t tsc;
-  std::uint64_t px;
-  std::uint64_t qty;
+struct ExampleEvent {
+    std::uint64_t tsc;
+    std::uint64_t px;
+    std::uint64_t qty;
 };
 
 }; // namespace binlog

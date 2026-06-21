@@ -2,19 +2,22 @@
 
 #pragma once
 
-#include <string_view>
+#include "binlog/concepts.hpp"
+
+#include <utility>
 
 namespace binlog {
 
-class Logger {
-public:
-  Logger() = default;
-  ~Logger() = default;
+template <Record Schema, typename Backend> class Logger {
+  public:
+    explicit Logger(Backend backend) : backend_(std::move(backend)) {}
 
-  void log();
+    void log(const Schema& record) {
+        backend_.write(&record, sizeof(Schema));
+    }
 
-private:
-  std::string_view path;
+  private:
+    Backend backend_;
 };
 
 } // namespace binlog

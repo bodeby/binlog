@@ -6,3 +6,7 @@
 3	20	1781804607005750196	tools/inspect/CMakeFiles/binlog-inspect.dir/main.cpp.o	f890c3f7cece47cf
 2	20	1781804607004750185	tools/decode/CMakeFiles/binlog-decode.dir/main.cpp.o	42607ae584dce668
 3	19	1781804607004750185	tools/decode/CMakeFiles/binlog-decode.dir/decoder.cpp.o	a43017625e6ac8b8
+2	724	1782036565521088313	src/CMakeFiles/binlog.dir/logger.cpp.o	21ca26abbb54348f
+725	816	1782036565627090488	src/libbinlog.a	ed8af0d3a6ae08cb
+817	926	1782036565734092685	tools/inspect/binlog-inspect	4e68e38f419434fb
+816	929	1782036565738294609	tools/decode/binlog-decode	b2dec93259118bba
