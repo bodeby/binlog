@@ -1,4 +1,4 @@
-// apps/encode/src/schema.hpp
+// apps/decode/src/schema.hpp
 
 #pragma once
 

@@ -1,4 +1,4 @@
-// include/binlog/logger.hpp
+// include/binlog/writer.hpp
 
 #pragma once
 
@@ -6,9 +6,9 @@
 
 namespace binlog {
 
-template <typename Backend> class Logger {
+template <typename Backend> class Writer {
   public:
-    explicit Logger(Backend backend) : backend_(std::move(backend)) {}
+    explicit Writer(Backend backend) : backend_(std::move(backend)) {}
 
     template <typename T> void write(const T& event) {
         backend_.write(&event, sizeof(event));

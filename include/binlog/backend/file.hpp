@@ -13,6 +13,8 @@ class FileBackend {
     explicit FileBackend(const std::filesystem::path& path);
 
     void write(const void* data, std::size_t size) noexcept;
+    void read(const void* data, std::size_t size) noexcept;
+
     void flush();
     void close();
 

@@ -9,19 +9,26 @@
 
 // #include <binlog/backend/mmap.hpp>
 #include <binlog/backend/file.hpp>
-#include <binlog/logger.hpp>
+#include <binlog/writer.hpp>
 
 using Side = encode::schema::Side;
 
 int main() {
 
-    auto header = encode::schema::EventHeader{
+    encode::schema::FileHeader file_header{
+        .magic = 1,
+        .version = 1,
+        .flags = 1,
+        .startTimestamp = 1,
+    };
+
+    encode::schema::EventHeader header{
         .timestamp = 1,
         .size = 1,
         .version = 1,
     };
 
-    auto payload = encode::schema::EventBody{
+    encode::schema::EventBody payload{
         .orderId = 1,
         .instrumentId = 1,
         .quantity = 1,
@@ -36,13 +43,13 @@ int main() {
 
     const auto path = std::filesystem::path("events.bin");
     binlog::backend::FileBackend backend(path);
-    binlog::Logger logger(std::move(backend));
+    binlog::Writer writer(std::move(backend));
 
-    logger.write(header);
-    logger.write(payload);
+    writer.write(header);
+    writer.write(payload);
 
-    logger.flush();
-    logger.close();
+    writer.flush();
+    writer.close();
 
     return EXIT_SUCCESS;
 }
