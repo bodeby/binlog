@@ -3,20 +3,21 @@
 #pragma once
 
 #include <cstddef>
-#include <string>
+#include <filesystem>
+#include <fstream>
 
 namespace binlog::backend {
 
-class MemoryMappedFile {
+class FileBackend {
   public:
-    explicit MemoryMappedFile(std::string path) : path_(std::move(path)) {};
+    explicit FileBackend(const std::filesystem::path& path);
 
     void write(const void* data, std::size_t size) noexcept;
     void flush();
     void close();
 
   private:
-    std::string path_;
+    std::ofstream file_;
 };
 
 } // namespace binlog::backend

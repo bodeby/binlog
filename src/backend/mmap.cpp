@@ -1,4 +1,4 @@
-// include/binlog/backend/mmap.hpp
+// include/binlog/backend/mmap.cpp
 
 #include "binlog/backend/mmap.hpp"
 
@@ -6,10 +6,18 @@
 #include <cstddef>
 #include <iostream>
 
-namespace binlog::backends {
+namespace binlog::backend {
 
-void MMAP::write(const void* data, std::size_t size) noexcept {
+void MemoryMappedFile::write(const void* data, std::size_t size) noexcept {
     std::clog << "writing to mmap" << '\n';
 }
 
-} // namespace binlog::backends
+void MemoryMappedFile::flush() {
+    std::clog << "flushing mmap file" << '\n';
+};
+
+void MemoryMappedFile::close() {
+    std::clog << "closing mmap file" << '\n';
+};
+
+} // namespace binlog::backend

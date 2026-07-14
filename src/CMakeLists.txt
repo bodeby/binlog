@@ -3,6 +3,7 @@ add_library(binlog)
 target_sources(binlog
     PRIVATE
     backend/mmap.cpp
+    backend/file.cpp
 )
 
 target_include_directories(binlog
