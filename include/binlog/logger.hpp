@@ -8,7 +8,8 @@
 
 namespace binlog {
 
-template <Record Schema, typename Backend> class Logger {
+template <Record Schema, typename Backend>
+class Logger {
   public:
     explicit Logger(Backend backend) : backend_(std::move(backend)) {}
 

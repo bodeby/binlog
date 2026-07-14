@@ -2,12 +2,23 @@
 
 #pragma once
 
+#include <emmintrin.h>
 #include <immintrin.h>
 
-namespace binlog::macro {
+namespace binlog::cpu {
 
-#define BL_CPU_RELAX() _mm_pause()
-#define BL_PREFETCH(addr) __builtin_prefetch(addr, 0, 3)
-#define BL_TRAP() __builtin_trap()
+inline void relax() noexcept {
+    _mm_pause();
+};
 
-} // namespace binlog::macro
+template <typename T>
+inline void prefetch(const T* addr) noexcept {
+    __builtin_prefetch(addr, 0, 3);
+};
+
+[[noreturn]]
+inline void trap() noexcept {
+    __builtin_trap();
+}
+
+} // namespace binlog::cpu

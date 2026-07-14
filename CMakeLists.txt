@@ -11,14 +11,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(BINLOG_BUILD_TOOLS "Build tools" ON)
+option(BINLOG_BUILD_APPS  "Build apps"  ON)
 option(BINLOG_BUILD_TESTS "Build tests" OFF)
 option(BINLOG_BUILD_BENCH "Build bench" OFF)
 
 add_subdirectory(src)
 
-if(BINLOG_BUILD_TOOLS)
-  add_subdirectory(tools)
+if(BINLOG_BUILD_APPS)
+  add_subdirectory(apps)
 endif()
 
 if(BINLOG_BUILD_TESTS)

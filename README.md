@@ -25,7 +25,17 @@ This separation keeps capture deterministic and predictable.
 * Cache-line aligned record layout
 * C++20
 
-## rchitecture
+## SBE inspired
+
+* Fixed-size headers
+* Versioned messages
+* Sequential layout
+* Little-endian encoding
+* Zero-copy decoding where possible
+* Cache-friendly structures
+* Compile-time knowledge of layouts
+
+## Architecture
 
 Binlog runs as an embedded library inside the trading process.
 
