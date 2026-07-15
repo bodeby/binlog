@@ -2,41 +2,41 @@
 
 # binlog Roadmap
 
-The goal of this project is to build a production-quality binary logging library inspired by systems programming and High-Frequency Trading (HFT) workloads.
+## Vision
 
-Each phase represents a complete, working milestone and should be tagged as a mini release.
+`binlog` is a modern C++ library for serializing structured events into an append-only binary log.
+
+The library focuses on:
+
+* predictable performance
+* simple abstractions
+* type-safe serialization
+* offline inspection and analysis
+
+It intentionally **does not** provide threading, scheduling, queues, or telemetry frameworks. Those remain application responsibilities.
+
+Every phase represents a stable milestone and should be tagged as a Git release.
 
 ---
 
 # v0.1.0 — Binary Round Trip ✅
 
-**Goal**
+## Goal
 
-Prove that binary serialization works.
+Establish the core serialization pipeline.
 
 ## Features
 
-* Writer abstraction
-* Reader abstraction
-* FileWriter backend
-* FileReader backend
+* Writer
+* Reader
+* FileWriter
+* FileReader
 * Binary serialization
 * Binary deserialization
-* Round-trip example application
 
-## Deliverables
+Applications
 
-```
-Writer
-    ↓
-events.bin
-    ↓
-Reader
-```
-
-Applications:
-
-```
+```text
 apps/
     encode/
     decode/
@@ -44,58 +44,64 @@ apps/
 
 Success criteria
 
-* Encode an event
-* Decode the same event
-* Values are identical
+```text
+Event
+
+↓
+
+Writer
+
+↓
+
+events.bin
+
+↓
+
+Reader
+
+↓
+
+Event
+```
+
+Decoded events exactly match the encoded events.
 
 ---
 
-# v0.2.0 — Binary Format
+# v0.2.0 — Binary Format Specification
 
-**Goal**
+## Goal
 
-Define and document the on-disk format.
+Define a stable on-disk format.
 
 ## Features
 
 * FileHeader
 * EventHeader
 * Magic number
-* Versioning
+* Version
 * Payload size
-* Documentation of binary layout
+* Endianness
+* Alignment rules
 
-## Deliverables
+Documentation
 
-```
-+------------+
-| FileHeader |
-+------------+
-| EventHeader|
-+------------+
-| Payload    |
-+------------+
-```
-
-Documentation:
-
-```
+```text
 docs/
     format.md
 ```
 
 Success criteria
 
-* Binary format documented
-* Decoder validates file magic/version
+The binary format is fully documented and versioned.
 
 ---
 
 # v0.3.0 — Event API
 
-**Goal**
+## Goal
 
-Move binary metadata generation into the library.
+Move serialization metadata into the library.
 
 Instead of
 
@@ -104,68 +110,69 @@ writer.write(header);
 writer.write(payload);
 ```
 
-Users write
+users write
 
 ```cpp
 writer.write(OrderSubmitted{...});
 ```
 
-## Features
+The library automatically generates
 
-* Automatic FileHeader generation
-* Automatic EventHeader generation
-* Timestamp generation
-* Payload size generation
+* FileHeader
+* EventHeader
+* timestamps
+* payload size
 
 Success criteria
 
-* User never manually creates headers
+Users only define events.
 
 ---
 
 # v0.4.0 — Event Registry
 
-**Goal**
+## Goal
 
 Support multiple event types.
 
 ## Features
 
-* EventType enum
-* Compile-time traits
-* Event versioning
-* Event registration
+* EventType
+* compile-time event traits
+* event versioning
+* registry
 
 Example
 
 ```cpp
 writer.write(OrderSubmitted{...});
 writer.write(BookUpdate{...});
+writer.write(ThreadStart{...});
 ```
 
 Success criteria
 
-Reader can identify event types while decoding.
+The Reader can identify event types without application-specific logic.
 
 ---
 
-# v0.5.0 — mmap Backend
+# v0.5.0 — Memory-Mapped Backend
 
-**Goal**
+## Goal
 
-Implement a high-performance backend.
+Provide a high-performance storage backend.
 
 ## Features
 
 * mmap()
 * munmap()
 * ftruncate()
-* Sequential writes
-* Zero-copy append
+* sequential append
+* zero-copy writes
 
 Backends
 
-```
+```text
 FileWriter
 FileReader
 
@@ -175,19 +182,19 @@ MemoryMappedReader
 
 Success criteria
 
-Applications work without code changes by swapping backends.
+Switching backends requires no application changes.
 
 ---
 
 # v0.6.0 — Inspection Tools
 
-**Goal**
+## Goal
 
-Make binary logs usable.
+Make binary logs easy to inspect.
 
 Applications
 
-```
+```text
 apps/
     inspect/
     dump/
@@ -196,15 +203,15 @@ apps/
 
 Examples
 
-```
+```bash
 binlog-inspect events.bin
 ```
 
-```
+```bash
 binlog-dump events.bin
 ```
 
-```
+```bash
 binlog-tail events.bin
 ```
 
@@ -214,119 +221,132 @@ Binary logs become human-readable.
 
 ---
 
-# v0.7.0 — Filtering & Search
+# v0.7.0 — Filtering & Export
 
-**Goal**
+## Goal
 
-Support live inspection.
+Support analysis workflows.
 
 Examples
 
-```
-binlog-tail events.bin
-```
-
-```
+```bash
 binlog-tail events.bin --event OrderSubmitted
 ```
 
-```
+```bash
 binlog-tail events.bin --json
 ```
 
+```bash
+binlog-dump events.bin | jq
+```
+
+Features
+
+* event filtering
+* JSON output
+* CSV output
+
 Success criteria
 
-Can follow a running application in another terminal.
+Logs integrate naturally with standard Unix tooling.
 
 ---
 
-# v0.8.0 — Benchmarks
+# v0.8.0 — Performance
 
-**Goal**
+## Goal
 
-Measure performance.
+Measure and understand performance.
 
 Applications
 
-```
+```text
 bench/
 ```
 
 Metrics
 
-* Throughput
-* Events/sec
-* Latency
-* File size
+* throughput
+* events/sec
+* latency
+* binary size
 * CPU usage
 
 Comparisons
 
-* std::fstream
-* mmap
+* FileWriter
+* MemoryMappedWriter
+
+Documentation
+
+```text
+docs/
+    benchmarks.md
+```
 
 Success criteria
 
-README contains benchmark graphs.
+Performance claims are backed by reproducible benchmarks.
 
 ---
 
-# v0.9.0 — Ring Buffer
+# v0.9.0 — Integration Examples
 
-**Goal**
+## Goal
 
-Separate application threads from disk I/O.
+Demonstrate how binlog fits into larger systems.
 
-Architecture
+Examples
 
+```text
+Producer Thread
+        │
+        ▼
+SPSC<Event>
+        │
+        ▼
+Telemetry Thread
+        │
+        ▼
+MemoryMappedWriter
 ```
-Application
-        │
-        ▼
- Lock-Free Ring Buffer
-        │
-        ▼
- Background Writer
-        │
-        ▼
-     Backend
-```
+
+Additional examples
+
+* market data recorder
+* matching engine telemetry
+* replay application
+
+Success criteria
+
+Demonstrate that binlog composes naturally with external concurrency primitives instead of implementing them.
+
+---
+
+# v1.0.0 — Stable Release
+
+## Goal
+
+A complete binary event serialization library.
 
 Features
 
-* Single Producer / Single Consumer
-* Background flush thread
-* Batched writes
-
-Success criteria
-
-Application never blocks on disk writes.
-
----
-
-# v1.0.0 — Production Release
-
-**Goal**
-
-A polished binary logging framework.
-
-## Features
-
-* Stable binary format
-* Versioned events
+* stable binary format
+* versioned events
 * File backend
-* mmap backend
+* MemoryMapped backend
 * Reader
 * Writer
-* Inspection tools
-* Benchmarks
-* Tests
-* Documentation
+* inspection tools
+* benchmarks
+* tests
+* documentation
 * CI
 
 Repository
 
-```
+```text
 include/
 src/
 apps/
@@ -337,35 +357,32 @@ docs/
 
 Success criteria
 
-A complete systems-programming portfolio project demonstrating:
+A polished systems programming project demonstrating
 
-* Binary serialization
-* File formats
-* Memory mapping
-* Modern C++
-* Generic programming
-* Performance engineering
-* Tooling
-* Testing
-* Documentation
+* binary serialization
+* binary file formats
+* memory mapping
+* modern C++
+* compile-time programming
+* performance engineering
+* tooling
+* documentation
+* testing
 
 ---
 
-# Future Ideas (Post v1.0)
+# Post v1.0
 
-These are intentionally out of scope for the initial release.
+Possible future work
 
-* Shared-memory backend
-* Network streaming backend
-* Compression
-* Checksums
-* Binary log replay
-* JSON export
-* Parquet export
+* compressed logs
+* checksums
+* binary replay engine
 * Python decoder
-* Wireshark plugin
-* Live TUI viewer
-* Structured query language for logs
-* Async io_uring backend (experimental)
+* Parquet exporter
+* shared-memory transport examples
+* network transport examples
+* terminal UI
+* experimental io_uring backend
 
-These features should only be added if they clearly improve the project and do not compromise the simplicity of the core library.
+These are intentionally optional. The core library should remain small, focused, and composable.
