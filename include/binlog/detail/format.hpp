@@ -1,20 +1,24 @@
 // include/binlog/detail/format.hpp
 
+#include "binlog/types/magic.hpp"
+#include "binlog/types/time.hpp"
+#include "binlog/types/time/cycles.hpp"
+
 #include <cstdint>
 
 namespace binlog::detail {
 
 struct FileHeader {
-    uint32_t magic;
+    time::CycleCount timestamp;
+    Magic magic;
     uint16_t version;
     uint16_t flags;
-    uint64_t timestamp;
 };
 
 static_assert(sizeof(FileHeader) == 16);
 
 struct EventHeader {
-    std::uint64_t timestamp;
+    time::CycleCount timestamp;
     std::uint32_t size;
     std::uint8_t version;
 };
