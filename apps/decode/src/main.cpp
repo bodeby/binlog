@@ -9,6 +9,7 @@
 // library
 #include <binlog/backend/file/reader.hpp>
 #include <binlog/reader.hpp>
+#include <iostream>
 
 using decode::schema::EventHeader;
 using decode::schema::EventBody;
@@ -23,7 +24,16 @@ int main() {
     auto header = reader.read<EventHeader>();
     auto body = reader.read<EventBody>();
 
-    reader.flush();
+    std::cout << "timestamp:     " << header.timestamp << '\n';
+    std::cout << "size:          " << header.size << '\n';
+    std::cout << "version:       " << static_cast<int>(header.version) << '\n';
+
+    std::cout << "orderId:       " << body.orderId << '\n';
+    std::cout << "instrumentId:  " << body.instrumentId << '\n';
+    std::cout << "quantity:      " << body.quantity << '\n';
+    std::cout << "price:         " << body.price << '\n';
+    std::cout << "side:          " << static_cast<int>(body.side) << '\n';
+
     reader.close();
 
     return EXIT_SUCCESS;

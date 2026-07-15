@@ -11,7 +11,7 @@
 namespace binlog::backend {
 
 FileReader::FileReader(const std::filesystem::path& path) {
-    constexpr auto mode = std::ios::binary | std::ios::out | std::ios::trunc;
+    constexpr auto mode = std::ios::binary | std::ios::in;
     file_.open(path, mode);
 
     if (!file_) {
@@ -25,17 +25,16 @@ void FileReader::read(void* buffer, std::size_t size) noexcept {
     if (!file_.is_open())
         return;
 
-    const auto buf = file_.rdbuf();
+    file_.read(static_cast<char*>(buffer), static_cast<std::streamsize>(size));
+
+    if (!file_)
+        std::clog << "failed to read\n";
 
     // snextc : Advance to next position and get character (public member function)
     // sbumpc : Get current character and advance to next position (public member function)
     // sgetc  : Get current character (public member function)
     // sgetn  : Get sequence of characters (public member function)
 }
-
-void FileReader::flush() {
-    file_.flush();
-};
 
 void FileReader::close() {
     file_.close();

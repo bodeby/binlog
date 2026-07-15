@@ -13,8 +13,6 @@ class FileReader {
     explicit FileReader(const std::filesystem::path& path);
 
     void read(void* buffer, std::size_t size) noexcept;
-
-    void flush();
     void close();
 
   private:

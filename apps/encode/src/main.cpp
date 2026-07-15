@@ -17,22 +17,22 @@ int main() {
 
     encode::schema::FileHeader file_header{
         .magic = 1,
-        .version = 1,
-        .flags = 1,
-        .startTimestamp = 1,
+        .version = 2,
+        .flags = 3,
+        .startTimestamp = 4,
     };
 
     encode::schema::EventHeader header{
         .timestamp = 1,
-        .size = 1,
-        .version = 1,
+        .size = 2,
+        .version = 3,
     };
 
     encode::schema::EventBody payload{
         .orderId = 1,
-        .instrumentId = 1,
-        .quantity = 1,
-        .price = 1,
+        .instrumentId = 2,
+        .quantity = 3,
+        .price = 4,
         .side = Side::Sell,
     };
 
