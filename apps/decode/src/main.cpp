@@ -8,10 +8,12 @@
 
 // library
 #include <binlog/backend/file/reader.hpp>
+#include <binlog/detail/format.hpp>
 #include <binlog/reader.hpp>
 #include <iostream>
 
-using decode::schema::EventHeader;
+using binlog::detail::FileHeader;
+using binlog::detail::EventHeader;
 using decode::schema::EventBody;
 
 int main() {
@@ -21,8 +23,13 @@ int main() {
 
     binlog::Reader reader(std::move(backend));
 
+    auto magic = reader.read<FileHeader>();
     auto header = reader.read<EventHeader>();
     auto body = reader.read<EventBody>();
+
+    std::cout << "magic:         " << magic.magic << '\n';
+    std::cout << "size:          " << magic.timestamp << '\n';
+    std::cout << "version:       " << static_cast<int>(magic.version) << '\n';
 
     std::cout << "timestamp:     " << header.timestamp << '\n';
     std::cout << "size:          " << header.size << '\n';

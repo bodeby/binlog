@@ -11,20 +11,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(BINLOG_BUILD_APPS  "Build apps"  ON)
-option(BINLOG_BUILD_TESTS "Build tests" OFF)
-option(BINLOG_BUILD_BENCH "Build bench" OFF)
-
 add_subdirectory(src)
+
+option(BINLOG_BUILD_APPS  "Build apps"  ON)
 
 if(BINLOG_BUILD_APPS)
   add_subdirectory(apps)
 endif()
 
+# ------------------------------------------------------------------
+# Tests
+# ------------------------------------------------------------------
+
+option(BINLOG_BUILD_TESTS "Build tests" OFF)
+
 if(BINLOG_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+# ------------------------------------------------------------------
+# Benchmarks
+# ------------------------------------------------------------------
+
+option(BINLOG_BUILD_BENCH "Build bench" OFF)
 
 if(BINLOG_BUILD_BENCH)
   add_subdirectory(bench)
