@@ -10,8 +10,12 @@ template <typename Backend> class Reader {
   public:
     explicit Reader(Backend backend) : backend_(std::move(backend)) {}
 
-    template <typename T> void read(const T& event) {
-        backend_.read(&event, sizeof(event));
+    template<typename T>
+    T read()
+    {
+        T value{};
+        backend_.read(&value, sizeof(T));
+        return value;
     }
 
     void flush() {

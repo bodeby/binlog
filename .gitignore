@@ -44,3 +44,7 @@
 build/
 build
 build/debug/
+
+
+# files
+events.bin

@@ -8,7 +8,7 @@
 #include <iostream>
 
 // #include <binlog/backend/mmap.hpp>
-#include <binlog/backend/file.hpp>
+#include <binlog/backend/file/writer.hpp>
 #include <binlog/writer.hpp>
 
 using Side = encode::schema::Side;
@@ -42,7 +42,7 @@ int main() {
     // setup logger;
 
     const auto path = std::filesystem::path("events.bin");
-    binlog::backend::FileBackend backend(path);
+    binlog::backend::FileWriter backend(path);
     binlog::Writer writer(std::move(backend));
 
     writer.write(header);

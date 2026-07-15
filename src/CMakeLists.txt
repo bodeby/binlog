@@ -3,7 +3,8 @@ add_library(binlog)
 target_sources(binlog
     PRIVATE
     backend/mmap.cpp
-    backend/file.cpp
+    backend/file/reader.cpp
+    backend/file/writer.cpp
 )
 
 target_include_directories(binlog

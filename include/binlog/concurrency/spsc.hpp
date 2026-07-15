@@ -8,7 +8,7 @@
  * Optimized: Lock-free, cache-friendly queue
  */
 
-#include <assert.h>
+#include <cassert> // assertion checks
 #include <atomic>  // thread-safe sequence counter
 #include <cstddef> // for std::size_t (portable size type)
 #include <vector>  // buffer for batch processing
@@ -18,7 +18,9 @@ namespace binlog {
 template <typename T> class SPSC {
 public:
   explicit SPSC(std::size_t capacity)
-      : capacity_(capacity), mask_(capacity - 1), buffer_(capacity) {
+      : capacity_(capacity),
+        mask_(capacity - 1),
+        buffer_(capacity) {
     assert((capacity & mask_) == 0); // enforce power-of-two
   }
 

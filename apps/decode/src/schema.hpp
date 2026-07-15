@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace encode::schema {
+namespace decode::schema {
 
 enum class EventType : std::uint8_t {
     Update,
@@ -45,4 +45,4 @@ struct EventBody {
 
 static_assert(sizeof(EventBody) == 32);
 
-} // namespace encode::schema
+} // namespace decode::schema
