@@ -35,6 +35,12 @@ template <typename T, typename U> constexpr auto validateBaseType() noexcept -> 
     return true;
 }
 
+template<typename Strong, typename Underlying>
+concept StrongTypeCompatible =
+    std::is_trivially_copyable_v<Strong> &&
+    std::is_standard_layout_v<Strong> &&
+    sizeof(Strong) == sizeof(Underlying);
+
 } // namespace binlog
 
 namespace std {

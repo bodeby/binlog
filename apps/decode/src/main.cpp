@@ -12,8 +12,8 @@
 #include <binlog/detail/format.hpp>
 #include <binlog/reader.hpp>
 
-using binlog::detail::FileHeader;
 using binlog::detail::EventHeader;
+using binlog::detail::FileHeader;
 using decode::schema::EventBody;
 
 int main() {
@@ -29,11 +29,11 @@ int main() {
 
     std::cout << "magic:         " << file_header.magic << '\n';
     std::cout << "size:          " << file_header.timestamp << '\n';
-    std::cout << "version:       " << static_cast<int>(file_header.version) << '\n';
+    std::cout << "version:       " << file_header.version << '\n';
 
     std::cout << "timestamp:     " << header.timestamp << '\n';
     std::cout << "size:          " << header.size << '\n';
-    std::cout << "version:       " << static_cast<int>(header.version) << '\n';
+    std::cout << "version:       " << header.version << '\n';
 
     std::cout << "orderId:       " << body.orderId << '\n';
     std::cout << "instrumentId:  " << body.instrumentId << '\n';
