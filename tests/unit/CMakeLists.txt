@@ -9,7 +9,7 @@ include(GoogleTest)
 # ------------------------------------------------------------------
 
 add_executable(binlog_unit_tests
-  core/concurrency/spsc_test.cpp
+  backend/file/reader.cpp
 )
 
 target_link_libraries(binlog_unit_tests

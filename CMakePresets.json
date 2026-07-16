@@ -20,6 +20,15 @@
       }
     },
     {
+      "name": "debug-tests",
+      "displayName": "Debug Tests",
+      "description": "Debug build with unit tests enabled.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "BINLOG_BUILD_TESTS": "ON"
+      }
+    },
+    {
       "name": "release",
       "inherits": "base",
       "cacheVariables": {
@@ -46,6 +55,10 @@
     {
       "name": "perf",
       "configurePreset": "perf"
+    },
+    {
+      "name": "debug-tests",
+      "configurePreset": "debug-tests"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # fast commands
 
-.PHONY: build encode decode
+.PHONY: build encode decode test
 
 # ------------------------
 # Run / Debug (generic)
@@ -19,3 +19,8 @@ decode:
 	cmake --preset debug
 	cmake --build --preset debug
 	./build/debug/apps/decode/binlog-decode
+
+test:
+	cmake --preset debug-tests
+	cmake --build --preset debug-tests
+	ctest --test-dir build/debug-tests --output-on-failure
