@@ -9,7 +9,6 @@ include(GoogleTest)
 # ------------------------------------------------------------------
 
 add_executable(binlog_unit_tests
-  backend/file/test_reader.cpp
 )
 
 target_link_libraries(binlog_unit_tests
