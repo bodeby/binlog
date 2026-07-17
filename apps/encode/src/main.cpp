@@ -13,7 +13,16 @@
 
 using Side = encode::schema::Side;
 
+using binlog::detail::EventHeader;
+using binlog::detail::FileHeader;
+using encode::schema::EventBody;
+
+
 int main() {
+
+    std::cout << sizeof(FileHeader) << '\n';
+    std::cout << sizeof(EventHeader) << '\n';
+    std::cout << sizeof(EventBody) << '\n';
 
     encode::schema::EventBody payload{
         .orderId = 1,

@@ -20,15 +20,20 @@ FileReader::FileReader(const std::filesystem::path& path) {
 }
 
 void FileReader::read(void* buffer, std::size_t size) noexcept {
-    std::clog << "reading file" << '\n';
 
     if (!file_.is_open())
         return;
 
+    std::clog << "before: " << file_.tellg() << " reading " << size << " bytes\n";
     file_.read(static_cast<char*>(buffer), static_cast<std::streamsize>(size));
+    std::clog << "after : " << file_.tellg() << '\n';
 
     if (!file_)
-        std::clog << "failed to read\n";
+        std::clog << "read failed\n"
+                  << "  eof  = " << file_.eof() << '\n'
+                  << "  fail = " << file_.fail() << '\n'
+                  << "  bad  = " << file_.bad() << '\n'
+                  << "  gcount = " << file_.gcount() << '\n';
 
     // snextc : Advance to next position and get character (public member function)
     // sbumpc : Get current character and advance to next position (public member function)

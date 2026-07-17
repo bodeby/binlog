@@ -18,12 +18,16 @@ using decode::schema::EventBody;
 
 int main() {
 
+    std::cout << sizeof(FileHeader) << '\n';
+    std::cout << sizeof(EventHeader) << '\n';
+    std::cout << sizeof(EventBody) << '\n';
+
     std::filesystem::path path("events.bin");
     binlog::backend::FileReader backend(path);
 
     binlog::Reader reader(std::move(backend));
+    const auto& file_header = reader.fileheader();
 
-    auto file_header = reader.read<FileHeader>();
     auto header = reader.read<EventHeader>();
     auto body = reader.read<EventBody>();
 

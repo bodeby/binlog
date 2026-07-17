@@ -159,3 +159,37 @@ TEST(RoundTrip, ReadsEventBody) {
     EXPECT_EQ(expected.qty, actual.qty);
     EXPECT_EQ(expected.side, actual.side);
 };
+
+TEST(RoundTrip, DoubleRead) {
+
+    // ------ ARRANGE ------
+
+    TempFile file(path);
+
+    auto expected = Body{};
+    auto header = detail::EventHeader{};
+
+    {
+        backend::FileWriter backend(file.path());
+        Writer writer(std::move(backend));
+        writer.write(expected);
+    }
+
+    // ------ ACT ------
+
+    backend::FileReader backend(file.path());
+    Reader reader(std::move(backend));
+
+    auto event_header = reader.read<detail::EventHeader>();
+    auto actual = reader.read<Body>();
+    auto acutal_2 = reader.read<Body>();
+    auto acutal_3 = reader.read<Body>();
+    reader.close();
+
+    // ------ ASSERT ------
+
+    EXPECT_EQ(expected.px, actual.px);
+    EXPECT_EQ(expected.qty, actual.qty);
+    EXPECT_EQ(expected.side, actual.side);
+
+};
