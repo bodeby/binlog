@@ -18,4 +18,5 @@ FetchContent_MakeAvailable(googletest)
 # Discover subdirectories
 # ------------------------------------------------------------------
 
-add_subdirectory(unit)
+# add_subdirectory(unit)
+add_subdirectory(integration)

@@ -9,22 +9,16 @@
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_C_COMPILER_LAUNCHER": "ccache",
-        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache"
+        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
       "name": "debug",
       "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "debug-tests",
-      "displayName": "Debug Tests",
       "description": "Debug build with unit tests enabled.",
-      "inherits": "debug",
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
         "BINLOG_BUILD_TESTS": "ON"
       }
     },
@@ -55,10 +49,15 @@
     {
       "name": "perf",
       "configurePreset": "perf"
-    },
+    }
+  ],
+  "testPresets": [
     {
-      "name": "debug-tests",
-      "configurePreset": "debug-tests"
+      "name": "debug",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
     }
   ]
 }

@@ -21,6 +21,6 @@ decode:
 	./build/debug/apps/decode/binlog-decode
 
 test:
-	cmake --preset debug-tests
-	cmake --build --preset debug-tests
-	ctest --test-dir build/debug-tests --output-on-failure
+	cmake --preset debug
+	cmake --build --preset debug
+	ctest --preset debug

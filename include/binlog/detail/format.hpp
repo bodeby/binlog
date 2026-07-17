@@ -1,5 +1,7 @@
 // include/binlog/detail/format.hpp
 
+#pragma once
+
 #include "binlog/types/internal.hpp"
 #include "binlog/types/time.hpp"
 
