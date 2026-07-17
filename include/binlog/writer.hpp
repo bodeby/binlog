@@ -31,6 +31,7 @@ template <typename Backend> class Writer {
             .timestamp = time::CycleCount{0},
             .version = internal::current_version,
             .size = internal::PayloadSize{sizeof(event)},
+            .eventType = internal::EventType{0},
         };
 
         backend_.write(&header, sizeof(header));

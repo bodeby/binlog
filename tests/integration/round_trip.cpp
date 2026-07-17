@@ -144,11 +144,16 @@ TEST(RoundTrip, ReadsEventBody) {
     backend::FileReader backend(file.path());
     Reader reader(std::move(backend));
 
-    auto _ = reader.read<detail::EventHeader>();
+    auto event_header = reader.read<detail::EventHeader>();
     auto actual = reader.read<Body>();
     reader.close();
 
     // ------ ASSERT ------
+
+    EXPECT_EQ(event_header.size.raw(), sizeof(expected));
+    EXPECT_EQ(event_header.version, internal::current_version);
+    EXPECT_EQ(event_header.timestamp, time::CycleCount{0});
+    EXPECT_EQ(event_header.eventType, internal::EventType{0});
 
     EXPECT_EQ(expected.px, actual.px);
     EXPECT_EQ(expected.qty, actual.qty);

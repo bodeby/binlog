@@ -6,6 +6,8 @@
 # Run / Debug (generic)
 # ------------------------
 
+all: build
+
 build:
 	cmake --preset debug
 	cmake --build --preset debug

@@ -8,9 +8,9 @@
 
 namespace binlog::backend {
 
-class MemoryMappedFileWriter {
+class MemoryMappedWriter {
   public:
-    explicit MemoryMappedFileWriter(const std::filesystem::path& path);
+    explicit MemoryMappedWriter(const std::filesystem::path& path);
 
     void write(const void* buffer, std::size_t size) noexcept;
     void flush();
