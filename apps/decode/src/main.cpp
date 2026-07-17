@@ -24,12 +24,14 @@ int main() {
     binlog::Reader reader(std::move(backend));
     const auto& file_header = reader.fileheader();
 
+    std::cout << "[FILE-HEADER]\n";
     std::cout << "magic:         " << file_header.magic << '\n';
     std::cout << "size:          " << file_header.timestamp << '\n';
     std::cout << "version:       " << file_header.version << '\n';
     std::cout << '\n';
 
-    while(auto event = reader.next<EventBody>()) {
+    while (auto event = reader.next<EventBody>()) {
+        std::cout << "\n[EVENT-BODY]\n";
         std::cout << "orderId:       " << event->orderId << '\n';
         std::cout << "instrumentId:  " << event->instrumentId << '\n';
         std::cout << "quantity:      " << event->quantity << '\n';
