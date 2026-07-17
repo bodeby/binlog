@@ -32,6 +32,15 @@ int main() {
         .side = Side::Sell,
     };
 
+    encode::schema::EventBody payload_2{
+        .orderId = 2,
+        .instrumentId = 2,
+        .quantity = 7,
+        .price = 3,
+        .side = Side::Buy,
+    };
+
+
     std::clog << "px: " << payload.price << '\n';
     std::clog << "qty: " << payload.quantity << '\n';
 
@@ -42,6 +51,7 @@ int main() {
     binlog::Writer writer(std::move(backend));
 
     writer.write(payload);
+    writer.write(payload_2);
 
     writer.flush();
     writer.close();

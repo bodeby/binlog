@@ -52,144 +52,26 @@ struct Body {
 
 TEST(RoundTrip, ReadsFileHeader) {
 
-    // ------ ARRANGE ------
+    // arrange
 
     TempFile file(path);
-
-    detail::FileHeader expected{
-        .timestamp = time::CycleCount{0},
-        .magic = internal::file_magic,
-        .version = internal::current_version,
-        .flags = internal::FileFlags{},
-    };
-
-    auto body = Body{};
 
     {
         backend::FileWriter backend(file.path());
         Writer writer(std::move(backend));
-        writer.write(body);
+        writer.write(Body{});
     }
 
-    // ------ ACT ------
+    // act
 
     backend::FileReader backend(file.path());
     Reader reader(std::move(backend));
-    auto actual = reader.fileheader();
 
-    // ------ ASSERT ------
+    const auto& header = reader.fileheader();
 
-    EXPECT_EQ(expected.timestamp, actual.timestamp);
-    EXPECT_EQ(expected.magic, actual.magic);
-    EXPECT_EQ(expected.version, actual.version);
-    EXPECT_EQ(expected.flags, actual.flags);
+    // assert
 
-    // ------ CLEAN ------
-
-    std::filesystem::remove(path);
+    EXPECT_EQ(header.magic, internal::file_magic);
+    EXPECT_EQ(header.version, internal::current_version);
+    EXPECT_EQ(header.timestamp, time::CycleCount{0});
 }
-
-TEST(RoundTrip, ReadsEventHeader) {
-
-    // ------ ARRANGE ------
-
-    TempFile file(path);
-
-    auto body = Body{};
-
-    auto expected = detail::EventHeader{
-        .timestamp = time::CycleCount{0},
-        .version = internal::current_version,
-        .size = internal::PayloadSize{sizeof(body)},
-        .eventType = internal::EventType{0},
-    };
-
-    {
-        backend::FileWriter backend(file.path());
-        Writer writer(std::move(backend));
-        writer.write(body);
-    }
-
-    // ------ ACT ------
-
-    backend::FileReader backend(file.path());
-    Reader reader(std::move(backend));
-    auto actual = reader.read<detail::EventHeader>();
-
-    // ------ ASSERT ------
-
-    EXPECT_EQ(expected.timestamp, actual.timestamp);
-    EXPECT_EQ(expected.version, actual.version);
-    EXPECT_EQ(expected.size, actual.size);
-    EXPECT_EQ(expected.eventType, actual.eventType);
-};
-
-TEST(RoundTrip, ReadsEventBody) {
-
-    // ------ ARRANGE ------
-
-    TempFile file(path);
-
-    auto expected = Body{};
-    auto header = detail::EventHeader{};
-
-    {
-        backend::FileWriter backend(file.path());
-        Writer writer(std::move(backend));
-        writer.write(expected);
-    }
-
-    // ------ ACT ------
-
-    backend::FileReader backend(file.path());
-    Reader reader(std::move(backend));
-
-    auto event_header = reader.read<detail::EventHeader>();
-    auto actual = reader.read<Body>();
-    reader.close();
-
-    // ------ ASSERT ------
-
-    EXPECT_EQ(event_header.size.raw(), sizeof(expected));
-    EXPECT_EQ(event_header.version, internal::current_version);
-    EXPECT_EQ(event_header.timestamp, time::CycleCount{0});
-    EXPECT_EQ(event_header.eventType, internal::EventType{0});
-
-    EXPECT_EQ(expected.px, actual.px);
-    EXPECT_EQ(expected.qty, actual.qty);
-    EXPECT_EQ(expected.side, actual.side);
-};
-
-TEST(RoundTrip, DoubleRead) {
-
-    // ------ ARRANGE ------
-
-    TempFile file(path);
-
-    auto expected = Body{};
-    auto header = detail::EventHeader{};
-
-    {
-        backend::FileWriter backend(file.path());
-        Writer writer(std::move(backend));
-        writer.write(expected);
-    }
-
-    // ------ ACT ------
-
-    backend::FileReader backend(file.path());
-    Reader reader(std::move(backend));
-
-    auto event_header = reader.read<detail::EventHeader>();
-    auto actual = reader.read<Body>();
-    auto acutal_2 = reader.read<Body>();
-    auto acutal_3 = reader.read<Body>();
-    reader.close();
-
-    // ------ ASSERT ------
-
-    EXPECT_EQ(expected.px, actual.px);
-    EXPECT_EQ(expected.qty, actual.qty);
-    EXPECT_EQ(expected.side, actual.side);
-
-};

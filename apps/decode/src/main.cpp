@@ -18,32 +18,25 @@ using decode::schema::EventBody;
 
 int main() {
 
-    std::cout << sizeof(FileHeader) << '\n';
-    std::cout << sizeof(EventHeader) << '\n';
-    std::cout << sizeof(EventBody) << '\n';
-
     std::filesystem::path path("events.bin");
     binlog::backend::FileReader backend(path);
 
     binlog::Reader reader(std::move(backend));
     const auto& file_header = reader.fileheader();
 
-    auto header = reader.read<EventHeader>();
-    auto body = reader.read<EventBody>();
-
     std::cout << "magic:         " << file_header.magic << '\n';
     std::cout << "size:          " << file_header.timestamp << '\n';
     std::cout << "version:       " << file_header.version << '\n';
+    std::cout << '\n';
 
-    std::cout << "timestamp:     " << header.timestamp << '\n';
-    std::cout << "size:          " << header.size << '\n';
-    std::cout << "version:       " << header.version << '\n';
-
-    std::cout << "orderId:       " << body.orderId << '\n';
-    std::cout << "instrumentId:  " << body.instrumentId << '\n';
-    std::cout << "quantity:      " << body.quantity << '\n';
-    std::cout << "price:         " << body.price << '\n';
-    std::cout << "side:          " << static_cast<int>(body.side) << '\n';
+    while(auto event = reader.next<EventBody>()) {
+        std::cout << "orderId:       " << event->orderId << '\n';
+        std::cout << "instrumentId:  " << event->instrumentId << '\n';
+        std::cout << "quantity:      " << event->quantity << '\n';
+        std::cout << "price:         " << event->price << '\n';
+        std::cout << "side:          " << static_cast<int>(event->side) << '\n';
+        std::cout << '\n';
+    }
 
     reader.close();
 

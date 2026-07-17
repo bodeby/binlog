@@ -12,7 +12,8 @@ class FileReader {
   public:
     explicit FileReader(const std::filesystem::path& path);
 
-    void read(void* buffer, std::size_t size) noexcept;
+    bool read(void* buffer, std::size_t size) noexcept;
+    void next(void* buffer, std::size_t size) noexcept;
     void close();
 
   private:
