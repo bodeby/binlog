@@ -3,11 +3,13 @@
 #include "schema.hpp"
 
 // STL
+#include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
+#include <random>
 
-// #include <binlog/backend/mmap.hpp>
 #include <binlog/backend/file/writer.hpp>
 #include <binlog/writer.hpp>
 
@@ -25,36 +27,35 @@ int main() {
 
     // setup logger;
 
-    const auto path = std::filesystem::path("events.bin");
+    const std::filesystem::path path{"events.bin"};
     binlog::backend::FileWriter backend(path);
     binlog::Writer writer(std::move(backend));
 
-    writer.write(EventBody{
-        .orderId = 1,
-        .instrumentId = 2,
-        .quantity = 3,
-        .price = 4,
-        .side = Side::Sell,
-    });
+    constexpr std::uint32_t seed{42};
+    std::mt19937 rng{seed};
 
-    writer.write(EventBody{
-        .orderId = 2,
-        .instrumentId = 2,
-        .quantity = 7,
-        .price = 3,
-        .side = Side::Buy,
-    });
+    // random distributions
+    std::uniform_int_distribution<std::uint32_t> qty_dist{1, 100};
+    std::uniform_real_distribution<double> px_dist{-50, 50};
+    std::bernoulli_distribution side_dist{0.5};
 
-    writer.write(EventBody{
-        .orderId = 3,
-        .instrumentId = 2,
-        .quantity = 10,
-        .price = 5,
-        .side = Side::Sell,
-    });
+    constexpr std::uint64_t event_count{1000};
+    constexpr std::uint64_t flush_interval{25};
 
-    writer.flush();
+    for (size_t i = 0; i < event_count; ++i) {
+        writer.write(EventBody{
+            .orderId = i,
+            .instrumentId = 1,
+            .quantity = qty_dist(rng),
+            .price = px_dist(rng),
+            .side = side_dist(rng) ? Side::Buy : Side::Sell,
+        });
+
+        // flush every 25 iterations
+        if ((i + 1) % flush_interval == 0)
+            writer.flush();
+    }
+
     writer.close();
-
     return EXIT_SUCCESS;
 }

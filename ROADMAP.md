@@ -87,8 +87,7 @@ Define a stable on-disk format.
 Documentation
 
 ```text
-docs/
-    format.md
+docs/format.md
 ```
 
 Success criteria
@@ -281,8 +280,7 @@ Comparisons
 Documentation
 
 ```text
-docs/
-    benchmarks.md
+docs/benchmarks.md
 ```
 
 Success criteria
@@ -332,17 +330,17 @@ A complete binary event serialization library.
 
 Features
 
-* stable binary format
-* versioned events
-* File backend
-* MemoryMapped backend
-* Reader
-* Writer
-* inspection tools
-* benchmarks
-* tests
-* documentation
-* CI
+[x] stable binary format
+[x] versioned events
+[x] File backend
+[] MemoryMapped backend
+[x] Reader
+[x] Writer
+[] inspection tools
+[] benchmarks
+[] tests
+[] documentation
+[] CI
 
 Repository
 
