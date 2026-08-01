@@ -37,13 +37,22 @@ This separation keeps capture deterministic and predictable.
 
 ## Benchmarks
 
-| Library                             | Events/s | ns/event |
-| ----------------------------------- | -------: | -------: |
-| binlog reader (file)                |   15.81 M |    63.3 |
-| binlog writer (file)                |   12.58 M |    79.5 |
-| binlog reader (mmap)                |      ... |      ... |
-| binlog writer (mmap)                |      ... |      ... |
-| spdlog (binary mode, if comparable) |      ... |      ... |
+
+### Write Performance
+
+| Library                               | Events/s | ns/event |
+| -----------------------------------   | -------: | -------: |
+| fwrite(&event, sizeof(event), 1, fp); |  22.22 M |     45.0 |
+| write(fd, &event, sizeof(event));     |      ... |      ... |
+| binlog writer (file)                  |  12.58 M |     79.5 |
+| binlog writer (mmap)                  |      ... |      ... |
+
+### Read Performance
+
+| Library                               | Events/s | ns/event |
+| -----------------------------------   | -------: | -------: |
+| binlog reader (file)                  |  15.81 M |     63.3 |
+| binlog reader (mmap)                  |      ... |      ... |
 
 
 ## Architecture
