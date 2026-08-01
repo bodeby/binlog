@@ -35,6 +35,17 @@ This separation keeps capture deterministic and predictable.
 * Cache-friendly structures
 * Compile-time knowledge of layouts
 
+## Benchmarks
+
+| Library                             | Events/s | ns/event |
+| ----------------------------------- | -------: | -------: |
+| binlog reader (file)                |   15.81 M |    63.3 |
+| binlog writer (file)                |   12.58 M |    79.5 |
+| binlog reader (mmap)                |      ... |      ... |
+| binlog writer (mmap)                |      ... |      ... |
+| spdlog (binary mode, if comparable) |      ... |      ... |
+
+
 ## Architecture
 
 Binlog runs as an embedded library inside the trading process.

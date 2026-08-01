@@ -35,10 +35,6 @@ template <typename Backend> class Reader {
         if (!backend_.read(&header, sizeof(header)))
             return std::nullopt;
 
-        std::cout << "version = "
-                  << header.version << ", size = "
-                  << header.size.raw() << '\n';
-
         if (header.version != internal::current_version)
             throw std::runtime_error("bad event version");
 

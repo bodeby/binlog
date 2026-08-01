@@ -31,7 +31,7 @@ test:
 # Benchmarks
 # ------------------------
 
-BENCH ?= write_file_benchmark
+BENCH ?= file_writer_benchmark
 
 bench:
 	cmake --preset release-bench

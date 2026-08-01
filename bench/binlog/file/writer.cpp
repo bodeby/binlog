@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-#include "schema.hpp"
+#include "../schema.hpp"
 
 #include <binlog/backend/file/writer.hpp>
 #include <binlog/writer.hpp>
