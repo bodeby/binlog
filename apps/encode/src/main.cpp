@@ -11,6 +11,7 @@
 #include <random>
 
 #include <binlog/backend/file/writer.hpp>
+#include <binlog/backend/mmap/writer.hpp>
 #include <binlog/writer.hpp>
 
 using Side = encode::schema::Side;
@@ -28,7 +29,8 @@ int main() {
     // setup logger;
 
     const std::filesystem::path path{"events.bin"};
-    binlog::backend::FileWriter backend(path);
+    // binlog::backend::FileWriter backend(path);
+    binlog::backend::MemoryMappedWriter backend(path);
     binlog::Writer writer(std::move(backend));
 
     constexpr std::uint32_t seed{42};

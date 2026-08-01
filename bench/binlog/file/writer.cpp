@@ -1,4 +1,4 @@
-// bench/binlog/write_file.cpp
+// bench/binlog/file/writer.cpp
 
 #include <benchmark/benchmark.h>
 
@@ -18,8 +18,10 @@ namespace {
 
 constexpr std::size_t EventCount = 1'000'000;
 
-std::vector<Event> make_events() {
+std::vector<Event> make_events()
+{
     std::mt19937 rng{42};
+
     std::uniform_int_distribution<std::uint32_t> qty_dist{1, 100};
     std::uniform_real_distribution<double> px_dist{-50.0, 50.0};
     std::bernoulli_distribution side_dist{0.5};
@@ -45,45 +47,42 @@ std::vector<Event> make_events() {
 
 static void BM_FileWriter(benchmark::State& state)
 {
-    auto events = make_events();
+    static const auto events = make_events();
 
-    const std::filesystem::path path = "benchmark.bin";
-
-    binlog::backend::FileWriter backend(path);
-    binlog::Writer writer(std::move(backend));
-
-    std::size_t index = 0;
-    std::size_t writes = 0;
-
-    const auto flush_interval = static_cast<std::size_t>(state.range(0));
+    const std::filesystem::path path{"benchmark.bin"};
 
     for (auto _ : state)
     {
-        writer.write(events[index]);
+        state.PauseTiming();
 
-        if (++index == events.size())
-            index = 0;
+        std::filesystem::remove(path);
 
-        if (++writes == flush_interval)
+        binlog::backend::FileWriter backend(path);
+        binlog::Writer writer(std::move(backend));
+
+        state.ResumeTiming();
+
+        for (const auto& event : events)
         {
-            writer.flush();
-            writes = 0;
+            benchmark::DoNotOptimize(event);
+            writer.write(event);
         }
+
+        state.PauseTiming();
+
+        writer.close();
+
+        state.ResumeTiming();
     }
 
-    writer.flush();
-    writer.close();
+    state.SetItemsProcessed(
+        state.iterations() * static_cast<int64_t>(EventCount));
 
-    state.SetItemsProcessed(state.iterations());
     state.SetBytesProcessed(
-        state.iterations() * static_cast<int64_t>(sizeof(Event)));
+        state.iterations() *
+        static_cast<int64_t>(EventCount * sizeof(Event)));
 }
 
-BENCHMARK(BM_FileWriter)
-    ->Arg(1)
-    ->Arg(10)
-    ->Arg(100)
-    ->Arg(1000)
-    ->Arg(10000);
+BENCHMARK(BM_FileWriter);
 
 BENCHMARK_MAIN();

@@ -24,6 +24,16 @@ target_link_libraries(fwrite_flush_benchmark
 # FileWriter Benchmarks
 # ------------------------
 
+add_executable(file_reader_benchmark
+    file/reader.cpp
+)
+
+target_link_libraries(file_reader_benchmark
+    PRIVATE
+        binlog
+        benchmark::benchmark_main
+)
+
 add_executable(file_writer_benchmark
     file/writer.cpp
 )
@@ -34,11 +44,15 @@ target_link_libraries(file_writer_benchmark
         benchmark::benchmark_main
 )
 
-add_executable(file_reader_benchmark
-    file/reader.cpp
+# ------------------------
+# MMAP Benchmarks
+# ------------------------
+
+add_executable(mmap_writer_benchmark
+    mmap/writer.cpp
 )
 
-target_link_libraries(file_reader_benchmark
+target_link_libraries(mmap_writer_benchmark
     PRIVATE
         binlog
         benchmark::benchmark_main

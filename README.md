@@ -37,17 +37,25 @@ This separation keeps capture deterministic and predictable.
 
 ## Benchmarks
 
+Benchmark configuration
+
+- 32-byte event payload + 16-byte event header (48 bytes/event on disk)
+- Single-threaded
+- Clang -O3
+- Google Benchmark
+- Linux x86-64
+- Ryzen 9 5900X
 
 ### Write Performance
 
 | Library                               | Events/s | ns/event |
 | -----------------------------------   | -------: | -------: |
-| fwrite(&event, sizeof(event), 1, fp); |  22.22 M |     45.0 |
-| write(fd, &event, sizeof(event));     |      ... |      ... |
-| binlog writer (file)                  |  12.58 M |     79.5 |
-| binlog writer (mmap)                  |      ... |      ... |
+| fwrite();                             |  22.22 M |     45.0 |
+| write();                              |      ... |      ... |
+| binlog (file backend)                 |  12.27 M |     79.5 |
+| binlog (mmap backend)                 |  42.34 M |     23.6 |
 
-### Read Performance
+### Read Performance 
 
 | Library                               | Events/s | ns/event |
 | -----------------------------------   | -------: | -------: |
