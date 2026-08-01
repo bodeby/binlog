@@ -1,14 +1,14 @@
-//
+// include/binlog/types/base.hpp
 
 #pragma once
 
 #include <ostream>
+
 namespace binlog {
 
 template <typename T, typename Tag> class BaseType {
   public:
     using value_type = T;
-
     constexpr BaseType() noexcept = default;
     constexpr explicit BaseType(T value) noexcept : value_(value) {}
 
@@ -16,6 +16,7 @@ template <typename T, typename Tag> class BaseType {
     constexpr auto raw() const noexcept -> T {
         return value_;
     }
+
     constexpr auto operator==(const BaseType&) const noexcept -> bool = default;
     constexpr auto operator<=>(const BaseType&) const noexcept = default;
 

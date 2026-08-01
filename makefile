@@ -1,6 +1,6 @@
 # fast commands
 
-.PHONY: build encode decode test
+.PHONY: build encode decode test bench
 
 # ------------------------
 # Run / Debug (generic)
@@ -26,3 +26,15 @@ test:
 	cmake --preset debug
 	cmake --build --preset debug
 	ctest --preset debug
+
+# ------------------------
+# Benchmarks
+# ------------------------
+
+BENCH ?= write_file_benchmark
+
+bench:
+	cmake --preset release-bench
+	cmake --build --preset release-bench
+	./build/release-bench/bench/binlog/$(BENCH) \
+		--benchmark_min_time=1s

@@ -30,6 +30,14 @@
       }
     },
     {
+      "name": "release-bench",
+      "inherits": "release",
+      "cacheVariables": {
+        "BINLOG_BUILD_BENCH": "ON",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "OFF"
+      }
+    },
+    {
       "name": "perf",
       "inherits": "base",
       "cacheVariables": {
@@ -38,18 +46,10 @@
     }
   ],
   "buildPresets": [
-    {
-      "name": "debug",
-      "configurePreset": "debug"
-    },
-    {
-      "name": "release",
-      "configurePreset": "release"
-    },
-    {
-      "name": "perf",
-      "configurePreset": "perf"
-    }
+    {"name": "debug","configurePreset": "debug"},
+    {"name": "release","configurePreset": "release"},
+    {"name": "release-bench","configurePreset": "release-bench"},
+    {"name": "perf","configurePreset": "perf"}
   ],
   "testPresets": [
     {

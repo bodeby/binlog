@@ -47,15 +47,16 @@ static_assert(validateBaseType<EventType, std::uint8_t>());
 
 // defaults
 
-constexpr std::uint32_t make_magic(const char (&s)[5]) {
+constexpr std::uint32_t makeMagic(const char (&s)[5]) {
     return static_cast<std::uint32_t>(s[0])
         | (static_cast<std::uint32_t>(s[1]) << 8)
         | (static_cast<std::uint32_t>(s[2]) << 16)
         | (static_cast<std::uint32_t>(s[3]) << 24);
 }
 
-inline constexpr Magic file_magic{make_magic("BNLG")};
+// constexpr default values
 
+inline constexpr Magic file_magic{makeMagic("BNLG")};
 inline constexpr FormatVersion current_version{1};
 
 } // namespace binlog::internal

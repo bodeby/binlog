@@ -48,3 +48,6 @@ build/debug/
 
 # files
 events.bin
+.cache/
+benchmark.bin
+benchmark.bin
