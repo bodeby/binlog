@@ -1,6 +1,6 @@
 # Binlog
 
-[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/bodeby/binlog?utm_source=badge)
+[![CodSpeed Badge](https://img.shields.io/endpoint?url=https://app.codspeed.io//badge.json)](https://app.codspeed.io//bodeby/binlog?utm_source=badge)
 
 Binlog is a deterministic flight recorder for ultra–low-latency C++ systems. It captures structured binary events from hot-path code with constant-time cost and zero dynamic allocation.
 
