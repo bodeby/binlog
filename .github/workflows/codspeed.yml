@@ -1,0 +1,36 @@
+name: CodSpeed
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: # required to have reports on PRs
+  # `workflow_dispatch` allows CodSpeed to trigger backtest
+  # performance analysis in order to generate initial data.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for OIDC authentication with CodSpeed
+
+jobs:
+  benchmarks:
+    name: Run benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the benchmarks
+        run: |
+          cmake --preset codspeed
+          cmake --build --preset codspeed --parallel
+
+      - name: Run the benchmarks
+        uses: CodSpeedHQ/action@v5
+        with:
+          mode: simulation
+          run: |
+            set -e
+            for benchmark in ./build/codspeed/bench/binlog/*_benchmark; do
+              "$benchmark"
+            done

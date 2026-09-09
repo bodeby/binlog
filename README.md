@@ -64,6 +64,21 @@ Benchmark configuration
 | binlog reader (file)                  |  15.81 M |     63.3 |
 | binlog reader (mmap)                  |      ... |      ... |
 
+### Continuous benchmarking
+
+Every push to `main` and every pull request runs the benchmark suite on
+[CodSpeed](https://app.codspeed.io/bodeby/binlog) in CPU simulation mode, so
+regressions on the capture and decode paths show up in the pull request itself.
+
+Running the suite locally:
+
+```
+make bench                      # walltime numbers, one executable at a time
+make bench-codspeed             # the exact suite CI reports to CodSpeed
+```
+
+See [docs/benchmarks.md](docs/benchmarks.md) for the layout of the suite.
+
 
 ## Architecture
 

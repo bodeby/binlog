@@ -1,86 +1,75 @@
-// bench/binlog/base/fwrite_buffered.cpp
+// bench/binlog/base/fwrite_flush.cpp
 
 #include <benchmark/benchmark.h>
 
+#include "../fixtures.hpp"
 #include "../schema.hpp"
 
 #include <cstdio>
-#include <random>
-#include <vector>
 
 using bench::schema::Event;
-using bench::schema::Side;
 
 namespace {
 
-constexpr std::size_t EventCount = 1'000'000;
+const char* Path = "benchmark-fwrite-flush.bin";
 
-std::vector<Event> make_events()
-{
-    std::mt19937 rng{42};
-
-    std::uniform_int_distribution<std::uint32_t> qty_dist{1, 100};
-    std::uniform_real_distribution<double> px_dist{-50.0, 50.0};
-    std::bernoulli_distribution side_dist{0.5};
-
-    std::vector<Event> events;
-    events.reserve(EventCount);
-
-    for (std::size_t i = 0; i < EventCount; ++i)
-    {
-        events.push_back({
-            .orderId      = i,
-            .instrumentId = 1,
-            .quantity     = qty_dist(rng),
-            .price        = px_dist(rng),
-            .side         = side_dist(rng) ? Side::Buy : Side::Sell,
-        });
-    }
-
-    return events;
-}
+// Smaller batch than the other benchmarks: flushing after every event
+// turns each write into a syscall, which dominates the runtime.
+constexpr std::size_t FlushBatch = 100'000;
 
 } // namespace
 
-static void BM_FWrite(benchmark::State& state)
+// Baseline: buffered stdio writes with an explicit fflush() every
+// `state.range(0)` events. Sweeping the flush interval shows how much
+// durability costs on the write path.
+static void BM_FWriteFlush(benchmark::State& state)
 {
-    static const auto events = make_events();
+    const auto& events = bench::events();
 
-    FILE* file = std::fopen("benchmark-fwrite.bin", "wb");
+    const auto interval = static_cast<std::size_t>(state.range(0));
+
+    FILE* file = std::fopen(Path, "wb");
     if (!file)
+    {
         state.SkipWithError("failed to open benchmark file");
-
-    std::size_t index = 0;
-    std::size_t writes = 0;
-
-    const auto flush_interval =
-        static_cast<std::size_t>(state.range(0));
+        return;
+    }
 
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(events[index]);
+        std::rewind(file);
 
-        std::fwrite(&events[index], sizeof(Event), 1, file);
+        std::size_t pending = 0;
 
-        if (++index == events.size())
-            index = 0;
-
-        if (++writes == flush_interval)
+        for (std::size_t i = 0; i < FlushBatch; ++i)
         {
-            std::fflush(file);
-            writes = 0;
+            const auto& event = events[i];
+
+            benchmark::DoNotOptimize(&event);
+            std::fwrite(&event, sizeof(Event), 1, file);
+
+            if (++pending == interval)
+            {
+                std::fflush(file);
+                pending = 0;
+            }
         }
+
+        benchmark::ClobberMemory();
     }
 
     std::fflush(file);
     std::fclose(file);
 
-    state.SetItemsProcessed(state.iterations());
+    state.SetItemsProcessed(
+        state.iterations() * static_cast<int64_t>(FlushBatch));
+
     state.SetBytesProcessed(
-        state.iterations() * static_cast<int64_t>(sizeof(Event)));
+        state.iterations() *
+        static_cast<int64_t>(FlushBatch * sizeof(Event)));
 }
 
-BENCHMARK(BM_FWrite)
+BENCHMARK(BM_FWriteFlush)
     ->Arg(1)
     ->Arg(10)
     ->Arg(100)

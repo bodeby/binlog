@@ -2,83 +2,58 @@
 
 #include <benchmark/benchmark.h>
 
+#include "../fixtures.hpp"
 #include "../schema.hpp"
 
 #include <cstdio>
-#include <random>
-#include <vector>
 
 using bench::schema::Event;
-using bench::schema::Side;
 
 namespace {
 
-constexpr std::size_t EventCount = 1'000'000;
-
-std::vector<Event> make_events()
-{
-    std::mt19937 rng{42};
-
-    std::uniform_int_distribution<std::uint32_t> qty_dist{1, 100};
-    std::uniform_real_distribution<double> px_dist{-50.0, 50.0};
-    std::bernoulli_distribution side_dist{0.5};
-
-    std::vector<Event> events;
-    events.reserve(EventCount);
-
-    for (std::size_t i = 0; i < EventCount; ++i)
-    {
-        events.push_back({
-            .orderId      = i,
-            .instrumentId = 1,
-            .quantity     = qty_dist(rng),
-            .price        = px_dist(rng),
-            .side         = side_dist(rng) ? Side::Buy : Side::Sell,
-        });
-    }
-
-    return events;
-}
+const char* Path = "benchmark-fwrite-buffered.bin";
 
 } // namespace
 
-static void BM_FWrite(benchmark::State& state)
+// Baseline: buffered stdio writes, one fwrite() per event and no
+// explicit flushing. Every iteration writes the whole event stream so
+// the measurement reflects steady-state throughput rather than a single
+// call.
+static void BM_FWriteBuffered(benchmark::State& state)
 {
-    static const auto events = make_events();
+    const auto& events = bench::events();
 
-    FILE* file = std::fopen("benchmark-fwrite.bin", "wb");
+    FILE* file = std::fopen(Path, "wb");
     if (!file)
+    {
         state.SkipWithError("failed to open benchmark file");
-
-    std::size_t index = 0;
-    std::size_t writes = 0;
-
-    const auto flush_interval =
-        static_cast<std::size_t>(state.range(0));
+        return;
+    }
 
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(events[index]);
+        std::rewind(file);
 
-        std::fwrite(&events[index], sizeof(Event), 1, file);
+        for (const auto& event : events)
+        {
+            benchmark::DoNotOptimize(&event);
+            std::fwrite(&event, sizeof(Event), 1, file);
+        }
 
-        if (++index == events.size())
-            index = 0;
+        benchmark::ClobberMemory();
     }
 
     std::fflush(file);
     std::fclose(file);
 
-    state.SetItemsProcessed(state.iterations());
+    state.SetItemsProcessed(
+        state.iterations() * static_cast<int64_t>(bench::EventCount));
+
     state.SetBytesProcessed(
-        state.iterations() * static_cast<int64_t>(sizeof(Event)));
+        state.iterations() *
+        static_cast<int64_t>(bench::EventCount * sizeof(Event)));
 }
 
-BENCHMARK(BM_FWrite)
-    ->Arg(1)
-    ->Arg(10)
-    ->Arg(100)
-    ->Arg(1000)
-    ->Arg(10000);
+BENCHMARK(BM_FWriteBuffered);
 
 BENCHMARK_MAIN();
