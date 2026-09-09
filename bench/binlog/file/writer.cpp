@@ -2,71 +2,47 @@
 
 #include <benchmark/benchmark.h>
 
+#include "../fixtures.hpp"
 #include "../schema.hpp"
 
 #include <binlog/backend/file/writer.hpp>
 #include <binlog/writer.hpp>
 
 #include <filesystem>
-#include <random>
-#include <vector>
 
 using bench::schema::Event;
-using bench::schema::Side;
 
 namespace {
 
-constexpr std::size_t EventCount = 1'000'000;
-
-std::vector<Event> make_events()
-{
-    std::mt19937 rng{42};
-
-    std::uniform_int_distribution<std::uint32_t> qty_dist{1, 100};
-    std::uniform_real_distribution<double> px_dist{-50.0, 50.0};
-    std::bernoulli_distribution side_dist{0.5};
-
-    std::vector<Event> events;
-    events.reserve(EventCount);
-
-    for (std::size_t i = 0; i < EventCount; ++i)
-    {
-        events.push_back({
-            .orderId      = i,
-            .instrumentId = 1,
-            .quantity     = qty_dist(rng),
-            .price        = px_dist(rng),
-            .side         = side_dist(rng) ? Side::Buy : Side::Sell,
-        });
-    }
-
-    return events;
-}
+const std::filesystem::path Path{"benchmark-file-writer.bin"};
 
 } // namespace
 
+// Writes the whole event stream through the file backend. Opening the
+// file and flushing it on close are excluded from the measurement so
+// only the hot path is timed.
 static void BM_FileWriter(benchmark::State& state)
 {
-    static const auto events = make_events();
-
-    const std::filesystem::path path{"benchmark.bin"};
+    const auto& events = bench::events();
 
     for (auto _ : state)
     {
         state.PauseTiming();
 
-        std::filesystem::remove(path);
+        std::filesystem::remove(Path);
 
-        binlog::backend::FileWriter backend(path);
+        binlog::backend::FileWriter backend(Path);
         binlog::Writer writer(std::move(backend));
 
         state.ResumeTiming();
 
         for (const auto& event : events)
         {
-            benchmark::DoNotOptimize(event);
+            benchmark::DoNotOptimize(&event);
             writer.write(event);
         }
+
+        benchmark::ClobberMemory();
 
         state.PauseTiming();
 
@@ -76,11 +52,11 @@ static void BM_FileWriter(benchmark::State& state)
     }
 
     state.SetItemsProcessed(
-        state.iterations() * static_cast<int64_t>(EventCount));
+        state.iterations() * static_cast<int64_t>(bench::EventCount));
 
     state.SetBytesProcessed(
         state.iterations() *
-        static_cast<int64_t>(EventCount * sizeof(Event)));
+        static_cast<int64_t>(bench::EventCount * sizeof(Event)));
 }
 
 BENCHMARK(BM_FileWriter);

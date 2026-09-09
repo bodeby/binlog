@@ -20,6 +20,15 @@ target_link_libraries(fwrite_flush_benchmark
         benchmark::benchmark_main
 )
 
+add_executable(write_benchmark
+    base/write.cpp
+)
+
+target_link_libraries(write_benchmark
+    PRIVATE
+        benchmark::benchmark_main
+)
+
 # ------------------------
 # FileWriter Benchmarks
 # ------------------------

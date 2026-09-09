@@ -43,13 +43,28 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
+    },
+    {
+      "name": "codspeed",
+      "description": "Benchmarks instrumented for CodSpeed (CPU simulation). Uses the default generator and compiler so it also works in CI.",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "OFF",
+        "BINLOG_BUILD_APPS": "OFF",
+        "BINLOG_BUILD_TESTS": "OFF",
+        "BINLOG_BUILD_BENCH": "ON",
+        "CODSPEED_MODE": "simulation"
+      }
     }
   ],
   "buildPresets": [
     {"name": "debug","configurePreset": "debug"},
     {"name": "release","configurePreset": "release"},
     {"name": "release-bench","configurePreset": "release-bench"},
-    {"name": "perf","configurePreset": "perf"}
+    {"name": "perf","configurePreset": "perf"},
+    {"name": "codspeed","configurePreset": "codspeed"}
   ],
   "testPresets": [
     {

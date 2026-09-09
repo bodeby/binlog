@@ -50,4 +50,4 @@ build/debug/
 events.bin
 .cache/
 benchmark.bin
-benchmark.bin
+benchmark-*.bin

@@ -1,6 +1,6 @@
 # fast commands
 
-.PHONY: build encode decode test bench
+.PHONY: build encode decode test bench bench-codspeed
 
 # ------------------------
 # Run / Debug (generic)
@@ -38,3 +38,11 @@ bench:
 	cmake --build --preset release-bench
 	./build/release-bench/bench/binlog/$(BENCH) \
 		--benchmark_min_time=1s
+
+# Runs the whole suite under CodSpeed's CPU simulation, exactly like CI.
+# Requires the CodSpeed CLI: https://codspeed.io/docs/cli
+bench-codspeed:
+	cmake --preset codspeed
+	cmake --build --preset codspeed --parallel
+	codspeed run --mode simulation -- \
+		sh -c 'set -e; for b in ./build/codspeed/bench/binlog/*_benchmark; do "$$b"; done'
