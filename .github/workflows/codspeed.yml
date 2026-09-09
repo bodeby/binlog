@@ -28,7 +28,7 @@ jobs:
       - name: Run the benchmarks
         uses: CodSpeedHQ/action@v5
         with:
-          mode: simulation
+          mode: walltime
           run: |
             set -e
             for benchmark in ./build/codspeed/bench/binlog/*_benchmark; do
